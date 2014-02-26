@@ -1,5 +1,7 @@
 requires 'Otogiri';
 requires 'Otogiri::Plugin';
+requires 'DBIx::Inspector';
+
 requires 'perl', '5.008005';
 
 on configure => sub {

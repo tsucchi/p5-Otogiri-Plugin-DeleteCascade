@@ -7,72 +7,49 @@ our $VERSION = "0.01";
 
 use Otogiri;
 use Otogiri::Plugin;
+use DBIx::Inspector;
 
 our @EXPORT = qw(delete_cascade);
 
 sub delete_cascade {
     my ($self, $table_name, $cond_href) = @_;
     $cond_href = $self->_deflate_param($table_name, $cond_href);
-    my @child_table_names = _fetch_child_table_names($self, $table_name);
+    my @child_table_info = _fetch_child_table_info($self, $table_name);
     my @parent_rows = $self->select($table_name, $cond_href);
-    for my $child_table_name ( @child_table_names ) {
-        _delete_child_tables($self, $table_name, $child_table_name, @parent_rows);
+    for my $child_table_info ( @child_table_info ) {
+        _delete_child_tables($self, $child_table_info, @parent_rows);
     }
     $self->delete($table_name, $cond_href);
 }
 
-sub _fetch_child_table_names {
+sub _fetch_child_table_info {
     my ($db, $table_name) = @_;
-    my $sql = <<"EOSQL";
-SELECT DISTINCT table_constraints.table_name
-   FROM information_schema.table_constraints
-        JOIN information_schema.constraint_column_usage
-          ON constraint_column_usage.table_catalog      = table_constraints.table_catalog
-         AND constraint_column_usage.table_schema       = table_constraints.table_schema
-         AND constraint_column_usage.constraint_catalog = table_constraints.constraint_catalog
-         AND constraint_column_usage.constraint_name    = table_constraints.constraint_name
-   WHERE table_constraints.constraint_type  ='FOREIGN KEY'
-     AND constraint_column_usage.table_name = ?
-;
-EOSQL
-    my @result = map { $_->{table_name} } $db->search_by_sql($sql, [$table_name]);
+    my $inspector = DBIx::Inspector->new(dbh => $db->dbh);
+    my $iter = $inspector->table($table_name)->pk_foreign_keys();
+    my @result = ();
+    while( my $fk = $iter->next ) {
+        push @result, {
+            fktable_name  => $fk->fktable_name,
+            pkcolumn_name => $fk->pkcolumn_name,
+            fkcolumn_name => $fk->fkcolumn_name,
+        }
+    }
     return @result;
 }
 
 sub _delete_child_tables {
-    my ($db, $parent_table_name, $child_table_name, @parent_rows) = @_;
-    my @foreign_column_info = _fetch_foreign_column_info($db, $parent_table_name, $child_table_name);
-    for my $foreign_column_info ( @foreign_column_info ) {
-        for my $parent_row ( @parent_rows ) {
-            my $child_delete_condition = {
-                $foreign_column_info->{column_name} => $parent_row->{$foreign_column_info->{foreign_column_name}},
-            };
-            $db->delete_cascade($child_table_name, $child_delete_condition);
-        }
+    my ($db, $child_table_info, @parent_rows) = @_;
+    for my $parent_row ( @parent_rows ) {
+        my $child_table_name   = $child_table_info->{fktable_name};
+        my $parent_column_name = $child_table_info->{pkcolumn_name};
+        my $child_column_name  = $child_table_info->{fkcolumn_name};
+
+        my $child_delete_condition = {
+            $child_column_name => $parent_row->{$parent_column_name},
+        };
+        $db->delete_cascade($child_table_name, $child_delete_condition);
     }
 }
-
-sub _fetch_foreign_column_info {
-    my ($db, $parent_table_name, $child_table_name) = @_;
-    my $sql = <<"EOSQL";
-SELECT key_column_usage.column_name
-     , constraint_column_usage.column_name AS foreign_column_name
-  FROM information_schema.table_constraints
-       JOIN information_schema.key_column_usage
-         ON table_constraints.constraint_name = key_column_usage.constraint_name
-       JOIN information_schema.constraint_column_usage
-          ON constraint_column_usage.table_catalog      = table_constraints.table_catalog
-         AND constraint_column_usage.table_schema       = table_constraints.table_schema
-         AND constraint_column_usage.constraint_catalog = table_constraints.constraint_catalog
-         AND constraint_column_usage.constraint_name    = table_constraints.constraint_name
-  WHERE table_constraints.constraint_type   = 'FOREIGN KEY'
-    AND table_constraints.table_name        = ?
-    AND constraint_column_usage.table_name  = ?
-;
-EOSQL
-    return $db->search_by_sql($sql, [$child_table_name, $parent_table_name]);
-}
-
 
 
 1;
@@ -96,11 +73,6 @@ Otogiri::Plugin::DeleteCascade - Otogiri Plugin for cascading delete by followin
     $db->insert('child_table',  { parent_id => 123, value => 'bbb'}); # child.parent_id referes parent_table.id(FK)
 
     $db->delete_cascade('parent_table', { id => 123 }); # both parent_table and child_table are deleted.
-
-
-=head1 NOTICE
-
-This module works only PostgreSQL.
 
 =head1 DESCRIPTION
 

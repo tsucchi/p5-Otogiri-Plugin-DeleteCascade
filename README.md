@@ -15,12 +15,6 @@ Otogiri::Plugin::DeleteCascade - Otogiri Plugin for cascading delete by followin
 
     $db->delete_cascade('parent_table', { id => 123 }); # both parent_table and child_table are deleted.
 
-
-
-# NOTICE
-
-This module works only PostgreSQL.
-
 # DESCRIPTION
 
 Otogiri::Plugin::DeleteCascade is plugin for [Otogiri](http://search.cpan.org/perldoc?Otogiri) which provides cascading delete feature.
