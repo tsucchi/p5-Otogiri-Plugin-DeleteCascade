@@ -12,6 +12,7 @@ our @EXPORT = qw(delete_cascade);
 
 sub delete_cascade {
     my ($self, $table_name, $cond_href) = @_;
+    $cond_href = $self->_deflate_param($table_name, $cond_href);
     my @child_table_names = _fetch_child_table_names($self, $table_name);
     my @parent_rows = $self->select($table_name, $cond_href);
     for my $child_table_name ( @child_table_names ) {
