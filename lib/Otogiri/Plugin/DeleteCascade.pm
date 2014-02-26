@@ -33,7 +33,7 @@ SELECT DISTINCT table_constraints.table_name
          AND constraint_column_usage.constraint_name    = table_constraints.constraint_name
    WHERE table_constraints.constraint_type  ='FOREIGN KEY'
      AND constraint_column_usage.table_name = ?
- ;
+;
 EOSQL
     my @result = map { $_->{table_name} } $db->search_by_sql($sql, [$table_name]);
     return @result;
