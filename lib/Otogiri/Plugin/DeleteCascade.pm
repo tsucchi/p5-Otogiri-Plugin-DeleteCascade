@@ -7,7 +7,6 @@ our $VERSION = "0.01";
 
 use Otogiri;
 use Otogiri::Plugin;
-use DBI;
 
 our @EXPORT = qw(delete_cascade);
 
