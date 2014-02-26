@@ -82,15 +82,37 @@ __END__
 
 =head1 NAME
 
-Otogiri::Plugin::DeleteCascade - It's new $module
+Otogiri::Plugin::DeleteCascade - Otogiri Plugin for cascading delete by following FK columns
 
 =head1 SYNOPSIS
 
-    use Otogiri::Plugin::DeleteCascade;
+    use Otogiri;
+    use Otogiri::Plugin;
+
+    Otogiri->load_plugin('DeleteCascade');
+
+    my $db = Otogiri->new( connect_info => $connect_info );
+    $db->insert('parent_table', { id => 123, value => 'aaa' });
+    $db->insert('child_table',  { parent_id => 123, value => 'bbb'}); # child.parent_id referes parent_table.id(FK)
+
+    $db->delete_cascade('parent_table', { id => 123 }); # both parent_table and child_table are deleted.
+
+
+=head1 NOTICE
+
+This module works only PostgreSQL.
 
 =head1 DESCRIPTION
 
-Otogiri::Plugin::DeleteCascade is ...
+Otogiri::Plugin::DeleteCascade is plugin for L<Otogiri> which provides cascading delete feature.
+loading this plugin, C<delete_cascade> method is exported. C<delete_cascade> follows Foreign Keys(FK) and
+delete data referred in these key.
+
+=head1 METHOD
+
+=head2 $self->delete_cascade($table_name, $cond_href);
+
+Delete rows that matched to $cond_href and child table rows that can be followed by Foreign Keys.
 
 =head1 LICENSE
 
