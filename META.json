@@ -1,7 +1,7 @@
 {
    "abstract" : "It's new $module",
    "author" : [
-      "Takuya Tsuchida <takuya.tsuchida@gmail.com>"
+      "Takuya Tsuchida <tsucchi@cpan.org>"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v0.11.0, CPAN::Meta::Converter version 2.133380",
@@ -53,5 +53,16 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tsucchi/p5-Otogiri-Plugin-DeleteCascade/issues"
+      },
+      "homepage" : "https://github.com/tsucchi/p5-Otogiri-Plugin-DeleteCascade",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tsucchi/p5-Otogiri-Plugin-DeleteCascade.git",
+         "web" : "https://github.com/tsucchi/p5-Otogiri-Plugin-DeleteCascade"
+      }
+   },
    "version" : "0.01"
 }
