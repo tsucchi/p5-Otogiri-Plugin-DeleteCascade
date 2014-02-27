@@ -68,6 +68,17 @@ Otogiri::Plugin::DeleteCascade is plugin for L<Otogiri> which provides cascading
 loading this plugin, C<delete_cascade> method is exported. C<delete_cascade> follows Foreign Keys(FK) and
 delete data referred in these key.
 
+=head1 NOTICE
+
+Please DO NOT USE this module in production code and data. This module is intended to be used for data maintainance
+in development environment or cleanup data for testcode.
+
+This module does not support multiple foreign key. It causes unexpected data lost if you delete data in
+multiple foreign key table.
+
+This module uses L<DBIx::Inspector> to access metadata(foreign keys). In some environment, database administrator
+does not allow to access these metadata, In this case this module can't be used.
+
 =head1 METHOD
 
 =head2 $self->delete_cascade($table_name, $cond_href);
