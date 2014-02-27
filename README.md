@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tsucchi/p5-Otogiri-Plugin-DeleteCascade.png?branch=master)](https://travis-ci.org/tsucchi/p5-Otogiri-Plugin-DeleteCascade) [![Coverage Status](https://coveralls.io/repos/tsucchi/p5-Otogiri-Plugin-DeleteCascade/badge.png?branch=master)](https://coveralls.io/r/tsucchi/p5-Otogiri-Plugin-DeleteCascade?branch=master)
 # NAME
 
 Otogiri::Plugin::DeleteCascade - Otogiri Plugin for cascading delete by following FK columns
@@ -17,7 +18,7 @@ Otogiri::Plugin::DeleteCascade - Otogiri Plugin for cascading delete by followin
 
 # DESCRIPTION
 
-Otogiri::Plugin::DeleteCascade is plugin for [Otogiri](http://search.cpan.org/perldoc?Otogiri) which provides cascading delete feature.
+Otogiri::Plugin::DeleteCascade is plugin for [Otogiri](https://metacpan.org/pod/Otogiri) which provides cascading delete feature.
 loading this plugin, `delete_cascade` method is exported. `delete_cascade` follows Foreign Keys(FK) and
 delete data referred in these key.
 
@@ -29,7 +30,7 @@ in development environment or cleanup data for testcode.
 This module does not support multiple foreign key. It causes unexpected data lost if you delete data in
 multiple foreign key table.
 
-This module uses [DBIx::Inspector](http://search.cpan.org/perldoc?DBIx::Inspector) to access metadata(foreign keys). In some environment, database administrator
+This module uses [DBIx::Inspector](https://metacpan.org/pod/DBIx::Inspector) to access metadata(foreign keys). In some environment, database administrator
 does not allow to access these metadata, In this case this module can't be used.
 
 # METHOD
