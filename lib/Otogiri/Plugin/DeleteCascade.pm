@@ -14,35 +14,23 @@ our @EXPORT = qw(delete_cascade);
 sub delete_cascade {
     my ($self, $table_name, $cond_href) = @_;
     $cond_href = $self->_deflate_param($table_name, $cond_href);
-    my @child_table_info = _fetch_child_table_info($self, $table_name);
+
     my @parent_rows = $self->select($table_name, $cond_href);
-    for my $child_table_info ( @child_table_info ) {
-        _delete_child_tables($self, $child_table_info, @parent_rows);
+    my $inspector = DBIx::Inspector->new(dbh => $self->dbh);
+    my $iter = $inspector->table($table_name)->pk_foreign_keys();
+
+    while( my $child_table_fk_info = $iter->next ) {
+        _delete_child($self, $child_table_fk_info, @parent_rows);
     }
     $self->delete($table_name, $cond_href);
 }
 
-sub _fetch_child_table_info {
-    my ($db, $table_name) = @_;
-    my $inspector = DBIx::Inspector->new(dbh => $db->dbh);
-    my $iter = $inspector->table($table_name)->pk_foreign_keys();
-    my @result = ();
-    while( my $fk = $iter->next ) {
-        push @result, {
-            fktable_name  => $fk->fktable_name,
-            pkcolumn_name => $fk->pkcolumn_name,
-            fkcolumn_name => $fk->fkcolumn_name,
-        }
-    }
-    return @result;
-}
-
-sub _delete_child_tables {
-    my ($db, $child_table_info, @parent_rows) = @_;
+sub _delete_child {
+    my ($db, $child_table_fk_info, @parent_rows) = @_;
     for my $parent_row ( @parent_rows ) {
-        my $child_table_name   = $child_table_info->{fktable_name};
-        my $parent_column_name = $child_table_info->{pkcolumn_name};
-        my $child_column_name  = $child_table_info->{fkcolumn_name};
+        my $child_table_name   = $child_table_fk_info->fktable_name;
+        my $parent_column_name = $child_table_fk_info->pkcolumn_name;
+        my $child_column_name  = $child_table_fk_info->fkcolumn_name;
 
         my $child_delete_condition = {
             $child_column_name => $parent_row->{$parent_column_name},
