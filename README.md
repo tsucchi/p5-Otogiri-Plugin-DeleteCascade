@@ -21,6 +21,17 @@ Otogiri::Plugin::DeleteCascade is plugin for [Otogiri](http://search.cpan.org/pe
 loading this plugin, `delete_cascade` method is exported. `delete_cascade` follows Foreign Keys(FK) and
 delete data referred in these key.
 
+# NOTICE
+
+Please DO NOT USE this module in production code and data. This module is intended to be used for data maintainance
+in development environment or cleanup data for testcode.
+
+This module does not support multiple foreign key. It causes unexpected data lost if you delete data in
+multiple foreign key table.
+
+This module uses [DBIx::Inspector](http://search.cpan.org/perldoc?DBIx::Inspector) to access metadata(foreign keys). In some environment, database administrator
+does not allow to access these metadata, In this case this module can't be used.
+
 # METHOD
 
 ## $self->delete\_cascade($table\_name, $cond\_href);
