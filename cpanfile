@@ -1,5 +1,5 @@
-requires 'Otogiri';
-requires 'Otogiri::Plugin';
+requires 'Otogiri', '0.06';
+requires 'Otogiri::Plugin', '0.02';
 requires 'DBIx::Inspector';
 
 requires 'perl', '5.008005';
