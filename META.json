@@ -44,8 +44,8 @@
       "runtime" : {
          "requires" : {
             "DBIx::Inspector" : "0",
-            "Otogiri" : "0",
-            "Otogiri::Plugin" : "0",
+            "Otogiri" : "0.06",
+            "Otogiri::Plugin" : "0.02",
             "perl" : "5.008005"
          }
       },
