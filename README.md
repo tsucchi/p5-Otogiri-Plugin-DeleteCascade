@@ -24,8 +24,8 @@ delete data referred in these key.
 
 # NOTICE
 
-Please DO NOT USE this module in production code and data. This module is intended to be used for data maintainance
-in development environment or cleanup data for testcode.
+Please DO NOT USE this module in production code and data. This module is intended to be used for data maintenance
+in development environment or cleanup data for test code.
 
 This module does not support multiple foreign key. It causes unexpected data lost if you delete data in
 multiple foreign key table.
