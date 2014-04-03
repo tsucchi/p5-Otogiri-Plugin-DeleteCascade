@@ -18,15 +18,17 @@ sub delete_cascade {
     my @parent_rows = $self->select($table_name, $cond_href);
     my $inspector = DBIx::Inspector->new(dbh => $self->dbh);
     my $iter = $inspector->table($table_name)->pk_foreign_keys();
-
+    my $affected_rows = 0;
     while( my $child_table_fk_info = $iter->next ) {
-        _delete_child($self, $child_table_fk_info, @parent_rows);
+        $affected_rows += _delete_child($self, $child_table_fk_info, @parent_rows);
     }
-    $self->delete($table_name, $cond_href);
+    $affected_rows += $self->delete($table_name, $cond_href);
+    return $affected_rows;
 }
 
 sub _delete_child {
     my ($db, $child_table_fk_info, @parent_rows) = @_;
+    my $affected_rows = 0;
     for my $parent_row ( @parent_rows ) {
         my $child_table_name   = $child_table_fk_info->fktable_name;
         my $parent_column_name = $child_table_fk_info->pkcolumn_name;
@@ -35,8 +37,9 @@ sub _delete_child {
         my $child_delete_condition = {
             $child_column_name => $parent_row->{$parent_column_name},
         };
-        $db->delete_cascade($child_table_name, $child_delete_condition);
+        $affected_rows += $db->delete_cascade($child_table_name, $child_delete_condition);
     }
+    return $affected_rows;
 }
 
 

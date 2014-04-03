@@ -40,8 +40,9 @@ $db->fast_insert('detective', {
     toys      => 'psychokinesis',
 });
 
-$db->delete_cascade('person', { id => $person_id });
+my $affected_rows = $db->delete_cascade('person', { id => $person_id });
 ok( !defined $db->single('person',    { id => $person_id }) );
 ok( !defined $db->single('detective', { person_id => $person_id }) );
+is( $affected_rows, 2 );
 
 done_testing;
