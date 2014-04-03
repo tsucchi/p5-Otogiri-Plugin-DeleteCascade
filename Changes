@@ -2,6 +2,10 @@ Revision history for Perl extension Otogiri-Plugin-DeleteCascade
 
 {{$NEXT}}
 
+0.02 2014-04-03T00:09:41Z
+
+    - fix: returns correct affected rows
+
 0.01 2014-03-12T09:12:23Z
 
     - original version
