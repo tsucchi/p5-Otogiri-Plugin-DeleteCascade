@@ -1,4 +1,4 @@
-requires 'Otogiri', '0.06';
+requires 'Otogiri', '0.11';
 requires 'Otogiri::Plugin', '0.02';
 requires 'DBIx::Inspector';
 
@@ -12,4 +12,5 @@ on configure => sub {
 
 on test => sub {
     requires 'Test::More';
+    requires 'DBD::SQLite';
 };
