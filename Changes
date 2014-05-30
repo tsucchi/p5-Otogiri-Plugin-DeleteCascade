@@ -2,6 +2,8 @@ Revision history for Perl extension Otogiri-Plugin-DeleteCascade
 
 {{$NEXT}}
 
+    - fix: remove inappropriate deflate
+
 0.02 2014-04-03T00:09:41Z
 
     - fix: returns correct affected rows

@@ -13,7 +13,6 @@ our @EXPORT = qw(delete_cascade);
 
 sub delete_cascade {
     my ($self, $table_name, $cond_href) = @_;
-    $cond_href = $self->_deflate_param($table_name, $cond_href);
 
     my @parent_rows = $self->select($table_name, $cond_href);
     my $inspector = DBIx::Inspector->new(dbh => $self->dbh);
