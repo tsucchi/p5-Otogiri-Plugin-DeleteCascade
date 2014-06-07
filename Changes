@@ -2,6 +2,8 @@ Revision history for Perl extension Otogiri-Plugin-DeleteCascade
 
 {{$NEXT}}
 
+0.04 2014-06-07T06:37:36Z
+
     - requires Otogiri 0.12(deflate bug is fixed)
 
 0.03 2014-05-30T13:19:02Z
