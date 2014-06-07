@@ -1,4 +1,4 @@
-requires 'Otogiri', '0.11';
+requires 'Otogiri', '0.12';
 requires 'Otogiri::Plugin', '0.02';
 requires 'DBIx::Inspector';
 
